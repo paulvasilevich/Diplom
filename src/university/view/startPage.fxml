@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="university.control.StartPageController">
+   <children>
+      <Button fx:id="searchButton" layoutX="514.0" layoutY="52.0" mnemonicParsing="false" onAction="#searchBtnClck" text="Search" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="50.0" />
+      <ButtonBar layoutX="291.0" layoutY="353.0" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="20.0">
+         <buttons>
+            <Button fx:id="addButton" mnemonicParsing="false" onAction="#addBtnClck" text="Add" />
+            <Button fx:id="editButton" mnemonicParsing="false" onAction="#editBtnClck" text="Edit" />
+            <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteBtnClck" text="Delete" />
+         </buttons>
+      </ButtonBar>
+      <ChoiceBox fx:id="choiceSearchType" layoutX="326.0" layoutY="50.0" prefHeight="25.0" prefWidth="180.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="50.0" />
+      <ChoiceBox fx:id="choiceTable" layoutX="121.0" layoutY="14.0" prefHeight="25.0" prefWidth="180.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="15.0" />
+      <Label layoutX="20.0" layoutY="19.0" text="Show Table..." AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0" />
+      <TextField layoutX="15.0" layoutY="50.0" prefHeight="26.0" prefWidth="288.0" />
+      <TableView fx:id="tableViewStudent" layoutX="110.0" layoutY="90.0" prefHeight="250.0" prefWidth="474.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="90.0">
+        <columns>
+          <TableColumn fx:id="tableColumnIdStudent" prefWidth="50.0" text="id" />
+          <TableColumn fx:id="tableColumnFullNameStudent" prefWidth="229.0" text="full_name" />
+            <TableColumn fx:id="tableColumnDateOfBirthStudent" prefWidth="120.0" text="date_of_birth" />
+            <TableColumn fx:id="tableColumnPassportStudent" prefWidth="120.0" text="passport" />
+            <TableColumn fx:id="tableColumnGroupStudent" prefWidth="50.0" text="group" />
+        </columns>
+      </TableView>
+      <TableView fx:id="tableViewLecturer" prefHeight="339.0" prefWidth="582.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="90.0">
+        <columns>
+          <TableColumn fx:id="tableColumnIdLecturer" prefWidth="50.0" text="id" />
+          <TableColumn fx:id="tableColumnFullNameLecturer" prefWidth="259.0" text="full_name" />
+            <TableColumn fx:id="tableColumnDateOfBirthLecturer" prefWidth="130.0" text="date_of_birth" />
+            <TableColumn fx:id="tableColumnPassportLecturer" prefWidth="130.0" text="passport" />
+        </columns>
+      </TableView>
+      <TableView fx:id="tableViewLectureHall" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="90.0">
+        <columns>
+          <TableColumn fx:id="tableColumnIdLectureHall" prefWidth="50.0" text="id" />
+          <TableColumn fx:id="tableColumnLectureHall" prefWidth="100.0" text="lecture_hall" />
+            <TableColumn fx:id="tableColumnGroupsLectureHall" prefWidth="119.0" text="groups" />
+            <TableColumn fx:id="tableColumnLectureLectureHall" prefWidth="150.0" text="lecturer" />
+            <TableColumn fx:id="tableColumnDisciplineLectureHall" prefWidth="150.0" text="discipline" />
+        </columns>
+      </TableView>
+      <TableView fx:id="tableViewDiscipline" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="90.0">
+        <columns>
+          <TableColumn fx:id="tableColumnIdDiscipline" prefWidth="50.0" text="id" />
+          <TableColumn fx:id="tableColumnDiscipline" prefWidth="255.0" text="discipline" />
+        </columns>
+      </TableView>
+      <TableView fx:id="tableViewGroup" layoutX="200.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="90.0">
+        <columns>
+          <TableColumn fx:id="tableColumnIdGroup" prefWidth="30.0" text="id" />
+          <TableColumn fx:id="tableColumnNumGroup" prefWidth="115.0" text="group" />
+            <TableColumn fx:id="tableColumnLecturerGroup" prefWidth="148.0" text="lecturer" />
+            <TableColumn fx:id="tableColumnDisciplineGroup" prefWidth="181.0" text="discipline" />
+            <TableColumn fx:id="tableColumnHallGroup" prefWidth="94.0" text="lecture hall" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
