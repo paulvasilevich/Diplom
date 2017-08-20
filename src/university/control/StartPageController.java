@@ -99,6 +99,9 @@ public class StartPageController {
     private ChoiceBox<String> choiceTable;
     @FXML
     private ChoiceBox<String> choiceSearchType;
+    private String url = "jdbc:mysql://localhost/University";
+    private String user = "root";
+    private String pass = "root";
 
     public TextField getSearchTextField() {
         return searchTextField;
@@ -156,7 +159,7 @@ public class StartPageController {
         this.choiceSearchType = choiceSearchType;
     }
 
-    private InnerDataInObsrvblLists list;
+    public InnerDataInObsrvblLists list;
 
     @FXML
     private void initialize() {
@@ -202,10 +205,12 @@ public class StartPageController {
     @FXML
     private void editBtnClck(ActionEvent actionEvent) {
         showDialogWindow(actionEvent);
+        Object editObject = choiceTable.getSelectionModel().getSelectedIndex();
     }
     @FXML
     private void deleteBtnClck(ActionEvent actionEvent) {
-        choiceTable();
+        delete(choiceTable().getSelectionModel().getSelectedIndex());
+        update();
     }
 
     public void update() {
@@ -248,23 +253,29 @@ public class StartPageController {
         tableViewDiscipline.setItems(list.getDisciplineObservableList());
     }
 
-    public void add() {
-        String url = "jdbc:mysql://localhost/University";
-        String user = "root";
-        String pass = "root";
+    public void add(Object object) {
 
-
-
-//        try {
-//            Connection connection = DriverManager.getConnection(url, user, pass);
-//            PreparedStatement statement = connection.prepareStatement("INSERT INTO ");
-//            //ResultSet resultSet = statement.executeUpdate("INSERT INTO ");
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Connection connection = DriverManager.getConnection(url, user, pass);
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ? VALUES ()");
+            preparedStatement.setString(1,tableName());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void delete() {
+    public void delete(int id) {
+
+        try {
+            Connection connection = DriverManager.getConnection(url, user, pass);
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM ? WHERE id = ?");
+            preparedStatement.setString(1,  tableName());
+            preparedStatement.setInt(2, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -299,6 +310,8 @@ public class StartPageController {
                     stage.initModality(Modality.WINDOW_MODAL);
                     stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
                     stage.showAndWait();
+                    stage.close();
+                    break;
                 }
                 case "Students":{
                     stage.setTitle("Student add/edit window");
@@ -307,6 +320,8 @@ public class StartPageController {
                     stage.initModality(Modality.WINDOW_MODAL);
                     stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
                     stage.showAndWait();
+                    stage.close();
+                    break;
                 }
                 case "Lecturers":{
                     stage.setTitle("Lecturer add/edit window");
@@ -315,6 +330,8 @@ public class StartPageController {
                     stage.initModality(Modality.WINDOW_MODAL);
                     stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
                     stage.showAndWait();
+                    stage.close();
+                    break;
                 }
                 case "Disciplines":{
                     stage.setTitle("Discipline add/edit window");
@@ -323,6 +340,8 @@ public class StartPageController {
                     stage.initModality(Modality.WINDOW_MODAL);
                     stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
                     stage.showAndWait();
+                    stage.close();
+                    break;
                 }
                 case "Lecture Halls":{
                     stage.close();
@@ -334,7 +353,22 @@ public class StartPageController {
         }
     }
 
-
+    private String tableName() {
+        String tableName = new String();
+        switch (choiceTable.getSelectionModel().getSelectedItem()) {
+            case "Groups":  tableName = "groups";;
+                break;
+            case "Students":  tableName = "students";;
+                break;
+            case "Lecturers":  tableName = "lecturers";;
+                break;
+            case "Lecture Halls":  tableName = "lecturehalls";;
+                break;
+            case "Disciplines":  tableName = "disciplines";;
+                break;
+        }
+        return  tableName;
+    }
 
 
 

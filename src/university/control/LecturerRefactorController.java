@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import university.model.Lecturer;
 
 public class LecturerRefactorController {
 
@@ -35,11 +37,40 @@ public class LecturerRefactorController {
     private CheckBox DNAEngineringCheckBox;
     @FXML
     private CheckBox BiologyCheckBox;
+    private boolean saveBtnStatus;
+    private Stage dialogStage;
+    private Lecturer newLecturer = new Lecturer();
 
     @FXML
     public void initialize() {
 
     }
+    public void setDialogStage(Stage dialogStage)
+    {
+        this.dialogStage = dialogStage;
+    }
 
+    public boolean isSaveBtnClck()
+    {
+        return saveBtnStatus;
+    }
+
+    @FXML
+    private void saveBtnClck()
+    {
+
+        newLecturer.setFullName(nameField.getText());
+        newLecturer.setDateOfBirth(dateField.getText());
+        newLecturer.setPassport(passportField.getText());
+
+
+        saveBtnStatus=true;
+        dialogStage.close();
+    }
+
+    @FXML
+    private void cancelBtnClck() {
+        dialogStage.close();
+    }
 
 }

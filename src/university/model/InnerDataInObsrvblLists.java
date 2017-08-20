@@ -145,7 +145,7 @@ public class InnerDataInObsrvblLists {
             readDiscipline(statement);
             readLecturer(statement);
             readLecturerHall(statement);
-            //readLectDiscplReltnshps(statement);
+           // readLectDiscplReltnshps(statement);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -256,9 +256,24 @@ public class InnerDataInObsrvblLists {
             e.printStackTrace();
         }
     }
-    private void readLectDiscplReltnshps(Statement statement) {
-
-    }
+//    private void readLectDiscplReltnshps(Statement statement) {
+//        try {
+//
+//            ResultSet resultSet = statement.executeQuery(
+//                    "SELECT ls.full_name, ds.discipline\n" +
+//                            " FROM University.lectDiscpRelationship ldr\n" +
+//                            " LEFT JOIN lecturers ls ON ldr.id_lecturer=ls.id\n" +
+//                            " LEFT JOIN disciplines ds ON ldr.id_discipline=ds.id\n;");
+//            while (resultSet.next()) {
+//                LecturerDisciplineRelationship ldr = new LecturerDisciplineRelationship();
+//                ldr.setIdDisciplineValue(resultSet.getString("ds.discipline"));
+//                ldr.setIdLecturerValue(resultSet.getString("ls.full_name"));
+//                lecturerDisciplineRelationshipList.add(ldr);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void readGroups(Statement statement) {
         try {
