@@ -165,10 +165,8 @@ public class StartPageController {
     private void initialize() {
         update();
 
-       // choiceTable.setValue("Groups");
+
         choiceTable.setItems(FXCollections.observableArrayList(
-                "Groups", "Students", "Lecturers", "Lecture Halls", "Disciplines"));
-        choiceSearchType.setItems(FXCollections.observableArrayList(
                 "Groups", "Students", "Lecturers", "Lecture Halls", "Disciplines"));
         choiceTable.getSelectionModel().selectFirst();
 
@@ -176,15 +174,35 @@ public class StartPageController {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 switch (newValue) {
-                    case "Groups": tableViewGroup.toFront();
+                    case "Groups": {
+                        tableViewGroup.toFront();
+                        choiceSearchType.setItems(FXCollections.observableArrayList(
+                                "Groups", "Lecturers", "Lecture Halls", "Disciplines"));
+                    }
                     break;
-                    case "Students": tableViewStudent.toFront();
+                    case "Students": {
+                        tableViewStudent.toFront();
+                        choiceSearchType.setItems(FXCollections.observableArrayList(
+                                "Groups", "Name", "Birthdate", "Passport"));
+                    }
                         break;
-                    case "Lecturers": tableViewLecturer.toFront();
+                    case "Lecturers": {
+                        tableViewLecturer.toFront();
+                        choiceSearchType.setItems(FXCollections.observableArrayList(
+                                 "Name", "Birthdate", "Passport"));
+                    }
                         break;
-                    case "Lecture Halls": tableViewLectureHall.toFront();
+                    case "Lecture Halls": {
+                        tableViewLectureHall.toFront();
+                        choiceSearchType.setItems(FXCollections.observableArrayList(
+                                "Groups", "Lecturers", "Lecture Halls", "Disciplines"));
+                    }
                         break;
-                    case "Disciplines": tableViewDiscipline.toFront();
+                    case "Disciplines": {
+                        tableViewDiscipline.toFront();
+                        choiceSearchType.setItems(FXCollections.observableArrayList(
+                                "Disciplines"));
+                    }
                         break;
                 }
             }
@@ -196,6 +214,7 @@ public class StartPageController {
     @FXML
     private void searchBtnClck(ActionEvent actionEvent) {
 
+        tableColumnLectureLectureHall
     }
     @FXML
     public void addBtnClck(ActionEvent actionEvent) {
@@ -204,12 +223,18 @@ public class StartPageController {
     }
     @FXML
     private void editBtnClck(ActionEvent actionEvent) {
+        String tablename = tableName();
+
+        ObservableList observableList = choiceTable().getSelectionModel().getSelectedCells();
+
+
         showDialogWindow(actionEvent);
-        Object editObject = choiceTable.getSelectionModel().getSelectedIndex();
+
+
     }
     @FXML
-    private void deleteBtnClck(ActionEvent actionEvent) {
-        delete(choiceTable().getSelectionModel().getSelectedIndex());
+    private void deleteBtnClck() {
+        delete(choiceTable().getSelectionModel().getSelectedIndex() + 1);
         update();
     }
 
@@ -219,16 +244,16 @@ public class StartPageController {
         tableColumnIdGroup.setCellValueFactory(new PropertyValueFactory<Group, Integer>("id"));
         tableColumnNumGroup.setCellValueFactory(new PropertyValueFactory<Group, String>("groupNum"));
         tableColumnLecturerGroup.setCellValueFactory(new PropertyValueFactory<Group, String>("Lecturer"));
-        tableColumnHallGroup.setCellValueFactory(new PropertyValueFactory<Group, String>("Discipline"));
-        tableColumnDisciplineGroup.setCellValueFactory(new PropertyValueFactory<Group, String>("LectureHall"));
+        tableColumnHallGroup.setCellValueFactory(new PropertyValueFactory<Group, String>("LectureHall"));
+        tableColumnDisciplineGroup.setCellValueFactory(new PropertyValueFactory<Group, String>("Discipline"));
 
         tableViewGroup.setItems(list.getGroupObservableList());
 
         tableColumnIdStudent.setCellValueFactory(new PropertyValueFactory<Student, Integer>("id"));
         tableColumnFullNameStudent.setCellValueFactory(new PropertyValueFactory<Student, String>("fullName"));
         tableColumnDateOfBirthStudent.setCellValueFactory(new PropertyValueFactory<Student, String>("dateOfBirth"));
-        tableColumnPassportStudent.setCellValueFactory(new PropertyValueFactory<Student, String>("idDiscipline"));
-        tableColumnGroupStudent.setCellValueFactory(new PropertyValueFactory<Student, String>("passport"));
+        tableColumnPassportStudent.setCellValueFactory(new PropertyValueFactory<Student, String>("passport"));
+        tableColumnGroupStudent.setCellValueFactory(new PropertyValueFactory<Student, String>("idGroup"));
 
         tableViewStudent.setItems(list.getStudentObservableList());
 
@@ -253,24 +278,13 @@ public class StartPageController {
         tableViewDiscipline.setItems(list.getDisciplineObservableList());
     }
 
-    public void add(Object object) {
-
-        try {
-            Connection connection = DriverManager.getConnection(url, user, pass);
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ? VALUES ()");
-            preparedStatement.setString(1,tableName());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void delete(int id) {
-
+        String table = tableName();
         try {
             Connection connection = DriverManager.getConnection(url, user, pass);
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM ? WHERE id = ?");
-            preparedStatement.setString(1,  tableName());
-            preparedStatement.setInt(2, id);
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM " + table + "  WHERE id = ?");
+
+            preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -291,9 +305,9 @@ public class StartPageController {
                 return tableViewStudent;
             case "Lecturers":
                 return tableViewLecturer;
-            case "Lecturers Hall":
+            case "Lecture Halls":
                 return tableViewLectureHall;
-            case "Discipline":
+            case "Disciplines":
                 return tableViewDiscipline;
         }
         return null;
@@ -351,6 +365,7 @@ public class StartPageController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        update();
     }
 
     private String tableName() {
@@ -368,6 +383,98 @@ public class StartPageController {
                 break;
         }
         return  tableName;
+    }
+
+    private String columnSearchName() {
+        String searchName = "";
+        switch (choiceTable.getSelectionModel().getSelectedItem()) {
+            case "Groups":  {
+                switch (choiceSearchType.getSelectionModel().getSelectedItem()) {
+                    case "Groups" : {
+                        searchName = "group_num";
+                        break;
+                    }
+                    case "Lecturers" : {
+                        searchName = "id_lecturer";
+                        break;
+                    }
+                    case "Lecture Halls" : {
+                        searchName = "id_lecturehall";
+                        break;
+                    }
+                    case "Discipline" : {
+                        searchName = "id_discipline";
+                        break;
+                    }
+                }
+                break;
+            }
+            case "Students": {
+                switch (choiceSearchType.getSelectionModel().getSelectedItem()) {
+                    case "Groups": {
+                        searchName = "id_group";
+                        break;
+                    }
+                    case "Name": {
+                        searchName = "full_name";
+                        break;
+                    }
+                    case "Birthdate": {
+                        searchName = "date_of_birth";
+                        break;
+                    }
+                    case "Passport": {
+                        searchName = "passport";
+                        break;
+                    }
+                }
+                break;
+            }
+
+            case "Lecturers" : {
+                switch (choiceSearchType.getSelectionModel().getSelectedItem()) {
+                    case "Name": {
+                        searchName = "full_name";
+                        break;
+                    }
+                    case "Birthdate": {
+                        searchName = "date_of_birth";
+                        break;
+                    }
+                    case "Passport": {
+                        searchName = "passport";
+                        break;
+                    }
+                }
+                break;
+            }
+            case "Lecture Halls":  {
+                switch (choiceSearchType.getSelectionModel().getSelectedItem()) {
+                    case "Groups" : {
+                        searchName = "id_group";
+                        break;
+                    }
+                    case "Lecturers" : {
+                        searchName = "id_lecturer";
+                        break;
+                    }
+                    case "Lecture Halls" : {
+                        searchName = "lecturehall";
+                        break;
+                    }
+                    case "Discipline" : {
+                        searchName = "id_discipline";
+                        break;
+                    }
+                }
+                break;
+            }
+            case "Disciplines": {
+                searchName = "discipline";
+                break;
+            }
+        }
+        return searchName;
     }
 
 

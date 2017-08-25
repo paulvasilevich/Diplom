@@ -13,8 +13,8 @@
    <children>
       <ButtonBar layoutX="378.0" layoutY="350.0" prefHeight="26.0" prefWidth="136.0">
          <buttons>
-            <Button fx:id="saveBtn" mnemonicParsing="false" text="Save" />
-            <Button fx:id="cancelBtn" mnemonicParsing="false" text="Cancel" />
+            <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#saveBtnClck" text="Save" />
+            <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#cancelBtnClck" text="Cancel" />
          </buttons>
       </ButtonBar>
       <VBox layoutX="86.0" layoutY="79.0" spacing="40.0">

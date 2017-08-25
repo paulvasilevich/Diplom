@@ -12,8 +12,8 @@
    <children>
       <ButtonBar layoutX="384.0" layoutY="353.0">
          <buttons>
-            <Button fx:id="saveBtn" mnemonicParsing="false" text="Save" />
-            <Button fx:id="cancelBtn" mnemonicParsing="false" text="Cancel" />
+            <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#saveBtnClck" text="Save" />
+            <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#cancelBtnClck" text="Cancel" />
          </buttons>
       </ButtonBar>
       <VBox layoutX="240.0" layoutY="96.0" spacing="30.0">
@@ -33,15 +33,15 @@
       </VBox>
       <Pane fx:id="disciplinesCheckBox" layoutX="198.0" layoutY="267.0" prefHeight="70.0" prefWidth="397.0">
          <children>
-            <CheckBox fx:id="MathematicsCheckBox" mnemonicParsing="false" text="Mathematics" />
-            <CheckBox fx:id="PhiloshophyCheckBox" layoutX="109.0" mnemonicParsing="false" text="Philoshophy" />
-            <CheckBox fx:id="LogicCheckBox" layoutY="26.0" mnemonicParsing="false" text="Logic" />
-            <CheckBox fx:id="PhysicsCheckBox" layoutX="109.0" layoutY="26.0" mnemonicParsing="false" text="Physics" />
-            <CheckBox fx:id="CyberneticsCheckBox" layoutY="52.0" mnemonicParsing="false" text="Cybernetics" />
-            <CheckBox fx:id="DNAEngineringCheckBox" layoutX="109.0" layoutY="52.0" mnemonicParsing="false" text="DNA Enginering" />
-            <CheckBox fx:id="SocialEngineringCheckBox" layoutX="218.0" mnemonicParsing="false" text="Social Enginering" />
-            <CheckBox fx:id="ChemistryCheckBox" layoutX="218.0" layoutY="26.0" mnemonicParsing="false" text="Chemistry" />
-            <CheckBox fx:id="BiologyCheckBox" layoutX="218.0" layoutY="52.0" mnemonicParsing="false" text="Biology" />
+            <CheckBox fx:id="mathematicsCheckBox" mnemonicParsing="false" text="Mathematics" />
+            <CheckBox fx:id="philosophyCheckBox" layoutX="109.0" mnemonicParsing="false" text="Philosophy" />
+            <CheckBox fx:id="logicCheckBox" layoutY="26.0" mnemonicParsing="false" text="Logic" />
+            <CheckBox fx:id="physicsCheckBox" layoutX="109.0" layoutY="26.0" mnemonicParsing="false" text="Physics" />
+            <CheckBox fx:id="cyberneticsCheckBox" layoutY="52.0" mnemonicParsing="false" text="Cybernetics" />
+            <CheckBox fx:id="dnaEngineeringCheckBox" layoutX="109.0" layoutY="52.0" mnemonicParsing="false" text="DNA Enginering" />
+            <CheckBox fx:id="socialEngineeringCheckBox" layoutX="218.0" mnemonicParsing="false" text="Social Enginering" />
+            <CheckBox fx:id="chemistryCheckBox" layoutX="218.0" layoutY="26.0" mnemonicParsing="false" text="Chemistry" />
+            <CheckBox fx:id="biologyCheckBox" layoutX="218.0" layoutY="52.0" mnemonicParsing="false" text="Biology" />
          </children>
       </Pane>
    </children>

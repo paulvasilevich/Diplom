@@ -36,8 +36,10 @@ public class GroupRefactorController {
     private ChoiceBox lecturerCBox;
     private boolean saveBtnStatus;
     private Stage dialogStage;
-    private Group newGroup = new Group();
 
+    String url = "jdbc:mysql://localhost/University";
+    String user = "root";
+    String pass = "root";
 
 
     @FXML
@@ -84,16 +86,6 @@ public class GroupRefactorController {
         }
     }
 
-    public void setDialogStage(Stage dialogStage)
-    {
-        this.dialogStage = dialogStage;
-    }
-
-    public boolean isSaveBtnClck()
-    {
-        return saveBtnStatus;
-    }
-
     @FXML
     private void saveBtnClck() {
         if (groupNumField.getText().isEmpty() || hallField.getText().isEmpty() ||
@@ -104,24 +96,20 @@ public class GroupRefactorController {
             alert.setContentText("Please make form completely.");
         } else {
 
-            newGroup.setGroupNum(groupNumField.getText());
-            newGroup.setLectureHall(hallField.getText());
-            newGroup.setLecturer(lecturerCBox.getSelectionModel().getSelectedItem().toString());
-            newGroup.setDiscipline(disciplineCBox.getSelectionModel().getSelectedItem().toString());
-
-            String url = "jdbc:mysql://localhost/University";
-            String user = "root";
-            String pass = "root";
-
             Connection connection = null;
             try {
                 connection = DriverManager.getConnection(url, user, pass);
-                PreparedStatement preparedStatement = connection.prepareStatement("");
+                PreparedStatement preparedStatement = connection.prepareStatement("INSERT  INTO groups (group_num, id_lecturer, id_discipline, id_lecturehall) " +
+                        "VALUES (?,?,?,?)");
 
-                preparedStatement.setString(1, newGroup.getGroupNum());
-                preparedStatement.setString(2, newGroup.getLectureHall());
-                preparedStatement.setString(3, newGroup.getLecturer());
-                preparedStatement.setString(4, newGroup.getDiscipline());
+                int idDiscipline = getId("disciplines");
+                int idLecturer = getId("lecturers");
+                int idHall = getId("lecturehalls");
+
+                preparedStatement.setString(1, groupNumField.getText());
+                preparedStatement.setInt(2, idLecturer);
+                preparedStatement.setInt(3, idDiscipline);
+                preparedStatement.setInt(4, idHall);
 
 
                 preparedStatement.executeUpdate();
@@ -131,7 +119,7 @@ public class GroupRefactorController {
             }
 
             saveBtnStatus = true;
-            dialogStage = (Stage) cancelBtn.getScene().getWindow();
+            dialogStage = (Stage) saveBtn.getScene().getWindow();
             dialogStage.close();
         }
     }
@@ -141,4 +129,40 @@ public class GroupRefactorController {
         dialogStage = (Stage) cancelBtn.getScene().getWindow();
         dialogStage.close();
     }
+
+    private int getId(String table) {
+        try {
+        String column = "";
+        String choiceName = "";
+        switch (table) {
+            case "lecturers" :
+                column = "full_name";
+                choiceName = lecturerCBox.getSelectionModel().getSelectedItem().toString();
+                break;
+            case "disciplines":
+                column = "discipline";
+                choiceName = disciplineCBox.getSelectionModel().getSelectedItem().toString();
+                break;
+            case "lecturehalls":
+                column = "lecturehall";
+                choiceName = hallField.getText();
+                break;
+        }
+
+
+            Connection connection2 = DriverManager.getConnection(url, user, pass);
+            PreparedStatement preparedStatement2 = connection2.prepareStatement("SELECT id FROM " + table +" WHERE " + column +" = ?");
+
+            preparedStatement2.setString(1, choiceName);
+            ResultSet resultSet = preparedStatement2.executeQuery();
+            while (resultSet.next()) {
+                return resultSet.getInt("id");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
 }

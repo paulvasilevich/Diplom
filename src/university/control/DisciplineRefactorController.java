@@ -1,10 +1,12 @@
 package university.control;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import university.model.Discipline;
+
+import java.sql.*;
 
 public class DisciplineRefactorController {
 
@@ -15,35 +17,47 @@ public class DisciplineRefactorController {
     private Button cancelBtn;
     @FXML
     private TextField disciplineField;
-    private boolean saveBtnStatus;
+
     private Stage dialogStage;
-    private Discipline newDiscipline = new Discipline();
     @FXML
     public void initialize() {
 
     }
-    public void setDialogStage(Stage dialogStage)
-    {
-        this.dialogStage = dialogStage;
-    }
-
-    public boolean isSaveBtnClck()
-    {
-        return saveBtnStatus;
-    }
+    String url = "jdbc:mysql://localhost/University";
+    String user = "root";
+    String pass = "root";
 
     @FXML
-    private void saveBtnClck()
-    {
+    private void saveBtnClck() {
+        if (disciplineField.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Alert window!");
+            alert.setHeaderText("The form don't complete.");
+            alert.setContentText("Please make form completely.");
+        } else {
 
-        newDiscipline.setValue(disciplineField.getText());
+            Connection connection = null;
+            try {
+                connection = DriverManager.getConnection(url, user, pass);
+                PreparedStatement preparedStatement = connection.prepareStatement("INSERT  INTO disciplines (discipline) " +
+                        "VALUES (?)");
 
-        saveBtnStatus=true;
-        dialogStage.close();
+                preparedStatement.setString(1, disciplineField.getText());
+
+                preparedStatement.executeUpdate();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            dialogStage = (Stage) saveBtn.getScene().getWindow();
+            dialogStage.close();
+        }
     }
 
     @FXML
     private void cancelBtnClck() {
+        dialogStage = (Stage) cancelBtn.getScene().getWindow();
         dialogStage.close();
     }
 }

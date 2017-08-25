@@ -11,8 +11,8 @@
    <children>
       <ButtonBar layoutX="384.0" layoutY="353.0">
          <buttons>
-            <Button fx:id="saveBtn" mnemonicParsing="false" text="Save" />
-            <Button fx:id="cancelBtn" mnemonicParsing="false" text="Cancel" />
+            <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#saveBtnClck" text="Save" />
+            <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#cancelBtnClck" text="Cancel" />
          </buttons>
       </ButtonBar>
       <VBox layoutX="240.0" layoutY="96.0" spacing="30.0">
