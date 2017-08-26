@@ -19,6 +19,7 @@ import university.model.*;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class StartPageController {
 
@@ -102,6 +103,7 @@ public class StartPageController {
     private String url = "jdbc:mysql://localhost/University";
     private String user = "root";
     private String pass = "root";
+
 
     public TextField getSearchTextField() {
         return searchTextField;
@@ -212,26 +214,114 @@ public class StartPageController {
     }
 
     @FXML
-    private void searchBtnClck(ActionEvent actionEvent) {
+    public void searchBtnClck() {
+        if (searchTextField.getText().isEmpty()) {
+            update();
+        }
+        else {
+            String tableName = tableName();
+            String columName = columnName();
+            String searchParameter = searchTextField.getText() + "%";
+            ArrayList<String> listProperties = new ArrayList<>();
 
-        tableColumnLectureLectureHall
+            try {
+                Connection connection = DriverManager.getConnection(url, user, pass);
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "SELECT * FROM " + tableName + " WHERE " + columName + " LIKE ?");
+                preparedStatement.setString(1, searchParameter);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                switch (tableName) {
+                    case "groups": {
+                        ArrayList<Group> groupSearchArrayList = new ArrayList<>();
+                        while (resultSet.next()) {
+                            Group searchGroup = new Group();
+                            searchGroup.setId(resultSet.getInt(1));
+                            searchGroup.setGroupNum(resultSet.getString(2));
+                            searchGroup.setLecturer(resultSet.getString(3));
+                            searchGroup.setDiscipline(resultSet.getString(4));
+                            searchGroup.setLectureHall(resultSet.getString(5));
+                            groupSearchArrayList.add(searchGroup);
+                        }
+                        ObservableList<Group> groupSearchObservableList =
+                                FXCollections.observableList(groupSearchArrayList);
+                        updateForSearch(tableName, groupSearchObservableList);
+                        break;
+                    }
+                    case "students": {
+                        ArrayList<Student> studentsSearchArrayList = new ArrayList<>();
+                        while (resultSet.next()) {
+                            Student searchStudent = new Student();
+                            searchStudent.setId(resultSet.getInt(1));
+                            searchStudent.setFullName(resultSet.getString(2));
+                            searchStudent.setDateOfBirth(resultSet.getString(3));
+                            searchStudent.setPassport(resultSet.getString(4));
+                            searchStudent.setIdGroup(resultSet.getString(5));
+                            studentsSearchArrayList.add(searchStudent);
+                        }
+                        ObservableList<Student> studentsSearchObservableList =
+                                FXCollections.observableList(studentsSearchArrayList);
+                        updateForSearch(tableName, studentsSearchObservableList);
+                        break;
+                    }
+                    case "lecturers": {
+                        ArrayList<Lecturer> lecturersSearchArrayList = new ArrayList<>();
+                        while (resultSet.next()) {
+                            Lecturer searchLecturer = new Lecturer();
+                            searchLecturer.setId(resultSet.getInt(1));
+                            searchLecturer.setFullName(resultSet.getString(2));
+                            searchLecturer.setDateOfBirth(resultSet.getString(3));
+                            searchLecturer.setPassport(resultSet.getString(4));
+                            lecturersSearchArrayList.add(searchLecturer);
+                        }
+                        ObservableList<Lecturer> lecturersSearchObservableList =
+                                FXCollections.observableList(lecturersSearchArrayList);
+                        updateForSearch(tableName, lecturersSearchObservableList);
+                        break;
+                    }
+                    case "lecturehalls": {
+                        ArrayList<LectureHall> lectureHallsSearchArrayList = new ArrayList<>();
+                        while (resultSet.next()) {
+                            LectureHall searchLectureHalls = new LectureHall();
+                            searchLectureHalls.setId(resultSet.getInt(1));
+                            searchLectureHalls.setValue(resultSet.getString(2));
+                            searchLectureHalls.setLecturer(resultSet.getString(3));
+                            searchLectureHalls.setGroups(resultSet.getString(4));
+                            searchLectureHalls.setDiscipline(resultSet.getString(5));
+                        }
+                        ObservableList<LectureHall> lectureHallsSearchObservableList =
+                                FXCollections.observableList(lectureHallsSearchArrayList);
+                        updateForSearch(tableName, lectureHallsSearchObservableList);
+                        break;
+                    }
+                }
+
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
+
     @FXML
     public void addBtnClck(ActionEvent actionEvent) {
        showDialogWindow(actionEvent);
 
     }
+
     @FXML
     private void editBtnClck(ActionEvent actionEvent) {
         String tablename = tableName();
 
-        ObservableList observableList = choiceTable().getSelectionModel().getSelectedCells();
 
 
-        showDialogWindow(actionEvent);
+
+        Object item = choiceTable().getSelectionModel().getSelectedItem();
+
+        showDialogWindow(actionEvent, item);
 
 
     }
+
     @FXML
     private void deleteBtnClck() {
         delete(choiceTable().getSelectionModel().getSelectedIndex() + 1);
@@ -278,6 +368,57 @@ public class StartPageController {
         tableViewDiscipline.setItems(list.getDisciplineObservableList());
     }
 
+    public void updateForSearch(String tableName, ObservableList list) {
+
+        switch (tableName) {
+            case "groups": {
+                tableColumnIdGroup.setCellValueFactory(new PropertyValueFactory<Group, Integer>("id"));
+                tableColumnNumGroup.setCellValueFactory(new PropertyValueFactory<Group, String>("groupNum"));
+                tableColumnLecturerGroup.setCellValueFactory(new PropertyValueFactory<Group, String>("Lecturer"));
+                tableColumnHallGroup.setCellValueFactory(new PropertyValueFactory<Group, String>("LectureHall"));
+                tableColumnDisciplineGroup.setCellValueFactory(new PropertyValueFactory<Group, String>("Discipline"));
+
+                tableViewGroup.setItems(list);
+                tableViewGroup.toFront();
+                break;
+            }
+            case "students": {
+                tableColumnIdStudent.setCellValueFactory(new PropertyValueFactory<Student, Integer>("id"));
+                tableColumnFullNameStudent.setCellValueFactory(new PropertyValueFactory<Student, String>("fullName"));
+                tableColumnDateOfBirthStudent.setCellValueFactory(new PropertyValueFactory<Student, String>("dateOfBirth"));
+                tableColumnPassportStudent.setCellValueFactory(new PropertyValueFactory<Student, String>("passport"));
+                tableColumnGroupStudent.setCellValueFactory(new PropertyValueFactory<Student, String>("idGroup"));
+
+                tableViewStudent.setItems(list);
+                tableViewStudent.toFront();
+                break;
+            }
+
+            case "lecturers": {
+                tableColumnIdLecturer.setCellValueFactory(new PropertyValueFactory<Lecturer, Integer>("id"));
+                tableColumnFullNameLecturer.setCellValueFactory(new PropertyValueFactory<Lecturer, String>("fullName"));
+                tableColumnDateOfBirthLecturer.setCellValueFactory(new PropertyValueFactory<Lecturer, String>("dateOfBirth"));
+                tableColumnPassportLecturer.setCellValueFactory(new PropertyValueFactory<Lecturer, String>("passport"));
+
+                tableViewLecturer.setItems(list);
+                tableViewLecturer.toFront();
+                break;
+            }
+
+            case "lecturehalls": {
+                tableColumnIdLectureHall.setCellValueFactory(new PropertyValueFactory<LectureHall, Integer>("id"));
+                tableColumnLectureHall.setCellValueFactory(new PropertyValueFactory<LectureHall, String>("value"));
+                tableColumnGroupsLectureHall.setCellValueFactory(new PropertyValueFactory<LectureHall, String>("groups"));
+                tableColumnLectureLectureHall.setCellValueFactory(new PropertyValueFactory<LectureHall, String>("lecturer"));
+                tableColumnDisciplineLectureHall.setCellValueFactory(new PropertyValueFactory<LectureHall, String>("discipline"));
+
+                tableViewLectureHall.setItems(list);
+                tableViewLectureHall.toFront();
+                break;
+            }
+        }
+    }
+
     public void delete(int id) {
         String table = tableName();
         try {
@@ -290,10 +431,6 @@ public class StartPageController {
             e.printStackTrace();
         }
 
-
-    }
-
-    public void edit() {
 
     }
 
@@ -368,6 +505,73 @@ public class StartPageController {
         update();
     }
 
+    private void showDialogWindow(ActionEvent actionEvent, Object item) {
+        Stage stage = new Stage();
+        try {
+            switch (choiceTable.getSelectionModel().getSelectedItem()) {
+                case "Groups": {
+                    FXMLLoader loader = new FXMLLoader();
+                    stage.setTitle("Group add/edit window");
+                    Pane pane = (Pane) loader.load(MainApp.class.getResource("view/AddEditGroupPage.fxml"));
+                    Scene scene = new Scene(pane);
+                    stage.setScene(scene);
+
+
+//                    FXMLLoader loader1 = new FXMLLoader();
+//                    loader1.setLocation(MainApp.class.getResource("control/GroupRefactorController.java"));
+//                    GroupRefactorController groupRefactorController = loader1.getController();
+//                    groupRefactorController.getGroupNumField().setText(((Group) item).getGroupNum());
+//                    groupRefactorController.getHallField().setText(((Group) item).getLectureHall());
+//                    groupRefactorController.getLecturerCBox().setValue(((Group) item).getLecturer());
+//                    groupRefactorController.getDisciplineCBox().setValue(((Group) item).getDiscipline());
+
+                    stage.initModality(Modality.WINDOW_MODAL);
+                    stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
+                    stage.showAndWait();
+                    stage.close();
+                    break;
+                }
+                case "Students":{
+                    stage.setTitle("Student add/edit window");
+                    Pane pane = FXMLLoader.load(MainApp.class.getResource("view/AddEditStudentPage.fxml"));
+                    stage.setScene(new Scene(pane));
+                    stage.initModality(Modality.WINDOW_MODAL);
+                    stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
+                    stage.showAndWait();
+                    stage.close();
+                    break;
+                }
+                case "Lecturers":{
+                    stage.setTitle("Lecturer add/edit window");
+                    Pane pane = FXMLLoader.load(MainApp.class.getResource("view/AddEditLecturerPage.fxml"));
+                    stage.setScene(new Scene(pane));
+                    stage.initModality(Modality.WINDOW_MODAL);
+                    stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
+                    stage.showAndWait();
+                    stage.close();
+                    break;
+                }
+                case "Disciplines":{
+                    stage.setTitle("Discipline add/edit window");
+                    Pane pane = FXMLLoader.load(MainApp.class.getResource("view/AddEditDisciplinePage.fxml"));
+                    stage.setScene(new Scene(pane));
+                    stage.initModality(Modality.WINDOW_MODAL);
+                    stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
+                    stage.showAndWait();
+                    stage.close();
+                    break;
+                }
+                case "Lecture Halls":{
+                    stage.close();
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        update();
+    }
+
     private String tableName() {
         String tableName = new String();
         switch (choiceTable.getSelectionModel().getSelectedItem()) {
@@ -385,10 +589,11 @@ public class StartPageController {
         return  tableName;
     }
 
-    private String columnSearchName() {
+    private String columnName() {
         String searchName = "";
         switch (choiceTable.getSelectionModel().getSelectedItem()) {
             case "Groups":  {
+
                 switch (choiceSearchType.getSelectionModel().getSelectedItem()) {
                     case "Groups" : {
                         searchName = "group_num";

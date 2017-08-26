@@ -27,13 +27,13 @@ public class GroupRefactorController {
     @FXML
     private Button cancelBtn;
     @FXML
-    private TextField groupNumField;
+    private  TextField groupNumField;
     @FXML
-    private TextField hallField;
+    private  TextField hallField;
     @FXML
-    private ChoiceBox disciplineCBox;
+    private  ChoiceBox disciplineCBox;
     @FXML
-    private ChoiceBox lecturerCBox;
+    private  ChoiceBox lecturerCBox;
     private boolean saveBtnStatus;
     private Stage dialogStage;
 
@@ -41,6 +41,37 @@ public class GroupRefactorController {
     String user = "root";
     String pass = "root";
 
+    public TextField getGroupNumField() {
+        return groupNumField;
+    }
+
+    public void setGroupNumField(TextField groupNumField) {
+        this.groupNumField = groupNumField;
+    }
+
+    public TextField getHallField() {
+        return hallField;
+    }
+
+    public void setHallField(TextField hallField) {
+        this.hallField = hallField;
+    }
+
+    public ChoiceBox getDisciplineCBox() {
+        return disciplineCBox;
+    }
+
+    public void setDisciplineCBox(ChoiceBox disciplineCBox) {
+        this.disciplineCBox = disciplineCBox;
+    }
+
+    public ChoiceBox getLecturerCBox() {
+        return lecturerCBox;
+    }
+
+    public void setLecturerCBox(ChoiceBox lecturerCBox) {
+        this.lecturerCBox = lecturerCBox;
+    }
 
     @FXML
     public void initialize() {
@@ -58,7 +89,7 @@ public class GroupRefactorController {
             while (resultSet.next()) {
                 lecturersList.add(resultSet.getString("lrs.full_name"));
             }
-            lecturerCBox.setItems(FXCollections.observableList(lecturersList));
+            lecturerCBox.setItems(FXCollections.observableList((lecturersList)));
             lecturerCBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {

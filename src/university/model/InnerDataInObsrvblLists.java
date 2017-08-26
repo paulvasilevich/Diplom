@@ -138,6 +138,7 @@ public class InnerDataInObsrvblLists {
         String pass = "root";
 
         try {
+    //        Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection(url, user, pass);
             Statement statement = connection.createStatement();
             readGroups(statement);
@@ -155,7 +156,6 @@ public class InnerDataInObsrvblLists {
         lecturerObservableList = FXCollections.observableList(getLecturerList());
         lectureHallObservableList = FXCollections.observableList(getLectureHallList());
         disciplineObservableList = FXCollections.observableList(getDisciplineList());
-
 
     }
 
@@ -240,6 +240,7 @@ public class InnerDataInObsrvblLists {
             e.printStackTrace();
         }
     }
+
     private void readDiscipline(Statement statement) {
 
         try {
@@ -256,24 +257,6 @@ public class InnerDataInObsrvblLists {
             e.printStackTrace();
         }
     }
-//    private void readLectDiscplReltnshps(Statement statement) {
-//        try {
-//
-//            ResultSet resultSet = statement.executeQuery(
-//                    "SELECT ls.full_name, ds.discipline\n" +
-//                            " FROM University.lectDiscpRelationship ldr\n" +
-//                            " LEFT JOIN lecturers ls ON ldr.id_lecturer=ls.id\n" +
-//                            " LEFT JOIN disciplines ds ON ldr.id_discipline=ds.id\n;");
-//            while (resultSet.next()) {
-//                LecturerDisciplineRelationship ldr = new LecturerDisciplineRelationship();
-//                ldr.setIdDisciplineValue(resultSet.getString("ds.discipline"));
-//                ldr.setIdLecturerValue(resultSet.getString("ls.full_name"));
-//                lecturerDisciplineRelationshipList.add(ldr);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private void readGroups(Statement statement) {
         try {

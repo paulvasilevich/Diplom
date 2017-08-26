@@ -22,7 +22,7 @@
       <ChoiceBox fx:id="choiceSearchType" layoutX="326.0" layoutY="50.0" prefHeight="25.0" prefWidth="180.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="50.0" />
       <ChoiceBox fx:id="choiceTable" layoutX="121.0" layoutY="14.0" prefHeight="25.0" prefWidth="180.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="15.0" />
       <Label layoutX="20.0" layoutY="19.0" text="Show Table..." AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0" />
-      <TextField layoutX="15.0" layoutY="50.0" prefHeight="26.0" prefWidth="288.0" />
+      <TextField fx:id="searchTextField" layoutX="15.0" layoutY="50.0" prefHeight="26.0" prefWidth="288.0" />
       <TableView fx:id="tableViewStudent" layoutX="110.0" layoutY="90.0" prefHeight="250.0" prefWidth="474.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="90.0">
         <columns>
           <TableColumn fx:id="tableColumnIdStudent" prefWidth="50.0" text="id" />
