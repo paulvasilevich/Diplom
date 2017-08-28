@@ -3,44 +3,48 @@ package university.control;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import university.model.Discipline;
-import university.model.Group;
-import university.model.InnerDataInObsrvblLists;
 
-import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class GroupRefactorController {
+public  class GroupRefactorController {
 
 
     @FXML
-    private Button saveBtn;
+    private Button addBtn;
+    @FXML
+    private Button editBtn;
+
+    private int id;
     @FXML
     private Button cancelBtn;
     @FXML
     private  TextField groupNumField;
     @FXML
-    private  TextField hallField;
+    private  TextField hallField = new TextField();
     @FXML
-    private  ChoiceBox disciplineCBox;
+    private  ChoiceBox disciplineCBox = new ChoiceBox();
     @FXML
-    private  ChoiceBox lecturerCBox;
-    private boolean saveBtnStatus;
+    private  ChoiceBox lecturerCBox = new ChoiceBox();
+
     private Stage dialogStage;
 
-    String url = "jdbc:mysql://localhost/University";
-    String user = "root";
-    String pass = "root";
 
+
+    private String url = "jdbc:mysql://localhost/University";
+    private String user = "root";
+    private String pass = "root";
+
+    /**
+     * Getters and Setters
+     *
+     */
     public TextField getGroupNumField() {
         return groupNumField;
     }
@@ -71,6 +75,22 @@ public class GroupRefactorController {
 
     public void setLecturerCBox(ChoiceBox lecturerCBox) {
         this.lecturerCBox = lecturerCBox;
+    }
+
+    public Stage getDialogStage() {
+        return dialogStage;
+    }
+
+    public void setDialogStage(Stage dialogStage) {
+        this.dialogStage = dialogStage;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @FXML
@@ -118,7 +138,7 @@ public class GroupRefactorController {
     }
 
     @FXML
-    private void saveBtnClck() {
+    private void addBtnClck() {
         if (groupNumField.getText().isEmpty() || hallField.getText().isEmpty() ||
                 lecturerCBox.getSelectionModel().isEmpty() || disciplineCBox.getSelectionModel().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -133,9 +153,9 @@ public class GroupRefactorController {
                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT  INTO groups (group_num, id_lecturer, id_discipline, id_lecturehall) " +
                         "VALUES (?,?,?,?)");
 
-                int idDiscipline = getId("disciplines");
-                int idLecturer = getId("lecturers");
-                int idHall = getId("lecturehalls");
+                int idDiscipline = getIdParameter("disciplines");
+                int idLecturer = getIdParameter("lecturers");
+                int idHall = getIdParameter("lecturehalls");
 
                 preparedStatement.setString(1, groupNumField.getText());
                 preparedStatement.setInt(2, idLecturer);
@@ -149,8 +169,46 @@ public class GroupRefactorController {
                 e.printStackTrace();
             }
 
-            saveBtnStatus = true;
-            dialogStage = (Stage) saveBtn.getScene().getWindow();
+            dialogStage = (Stage) addBtn.getScene().getWindow();
+            dialogStage.close();
+        }
+    }
+
+    @FXML
+    private void editBtnClck() {
+        if (groupNumField.getText().isEmpty() || hallField.getText().isEmpty() ||
+                lecturerCBox.getSelectionModel().isEmpty() || disciplineCBox.getSelectionModel().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Alert window!");
+            alert.setHeaderText("The form don't complete.");
+            alert.setContentText("Please make form completely.");
+        } else {
+
+            Connection connection = null;
+            try {
+                connection = DriverManager.getConnection(url, user, pass);
+                PreparedStatement preparedStatement = connection.prepareStatement("UPDATE groups SET " +
+                        "group_num = ?, id_lecturer = ?, id_discipline = ?, id_lecturehall = ? WHERE id = ?");
+
+
+                int idDiscipline = getIdParameter("disciplines");
+                int idLecturer = getIdParameter("lecturers");
+                int idHall = getIdParameter("lecturehalls");
+
+                preparedStatement.setString(1, groupNumField.getText());
+                preparedStatement.setInt(2, idLecturer);
+                preparedStatement.setInt(3, idDiscipline);
+                preparedStatement.setInt(4, idHall);
+                preparedStatement.setInt(5, id);
+
+
+                preparedStatement.executeUpdate();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            dialogStage = (Stage) editBtn.getScene().getWindow();
             dialogStage.close();
         }
     }
@@ -161,7 +219,7 @@ public class GroupRefactorController {
         dialogStage.close();
     }
 
-    private int getId(String table) {
+    private int getIdParameter(String table) {
         try {
         String column = "";
         String choiceName = "";

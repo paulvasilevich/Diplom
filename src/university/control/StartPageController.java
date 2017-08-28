@@ -100,11 +100,17 @@ public class StartPageController {
     private ChoiceBox<String> choiceTable;
     @FXML
     private ChoiceBox<String> choiceSearchType;
+
     private String url = "jdbc:mysql://localhost/University";
     private String user = "root";
     private String pass = "root";
 
+    public InnerDataInObsrvblLists list;
 
+    /**
+     * Getters and Setters
+     *
+     */
     public TextField getSearchTextField() {
         return searchTextField;
     }
@@ -161,7 +167,7 @@ public class StartPageController {
         this.choiceSearchType = choiceSearchType;
     }
 
-    public InnerDataInObsrvblLists list;
+
 
     @FXML
     private void initialize() {
@@ -202,8 +208,6 @@ public class StartPageController {
                         break;
                     case "Disciplines": {
                         tableViewDiscipline.toFront();
-                        choiceSearchType.setItems(FXCollections.observableArrayList(
-                                "Disciplines"));
                     }
                         break;
                 }
@@ -222,7 +226,6 @@ public class StartPageController {
             String tableName = tableName();
             String columName = columnName();
             String searchParameter = searchTextField.getText() + "%";
-            ArrayList<String> listProperties = new ArrayList<>();
 
             try {
                 Connection connection = DriverManager.getConnection(url, user, pass);
@@ -305,26 +308,61 @@ public class StartPageController {
     @FXML
     public void addBtnClck(ActionEvent actionEvent) {
        showDialogWindow(actionEvent);
-
     }
 
     @FXML
     private void editBtnClck(ActionEvent actionEvent) {
-        String tablename = tableName();
-
-
-
 
         Object item = choiceTable().getSelectionModel().getSelectedItem();
 
         showDialogWindow(actionEvent, item);
 
-
     }
 
     @FXML
     private void deleteBtnClck() {
-        delete(choiceTable().getSelectionModel().getSelectedIndex() + 1);
+
+
+
+        switch (choiceTable.getSelectionModel().getSelectedItem()) {
+            case "Groups": {
+                Group deletedObject = (Group) choiceTable().getSelectionModel().getSelectedItem();
+                delete(deletedObject.getId());
+                break;
+            }
+            case "Students": {
+                Student deletedObject = (Student) choiceTable().getSelectionModel().getSelectedItem();
+                delete(deletedObject.getId());
+                break;
+            }
+            case "Lecturers": {
+                Lecturer deletedObject = (Lecturer) choiceTable().getSelectionModel().getSelectedItem();
+                delete(deletedObject.getId());
+                break;
+            }
+            case "Lecture Halls": {
+                LectureHall deletedObject = (LectureHall) choiceTable().getSelectionModel().getSelectedItem();
+                delete(deletedObject.getId());
+                break;
+            }
+            case "Disciplines": {
+                Discipline deletedObject = (Discipline) choiceTable().getSelectionModel().getSelectedItem();
+                delete(deletedObject.getId());
+                break;
+            }
+        }
+
+//        try {
+//            Class deletedObjectClass = deletedObject.getClass();
+//            Field idField = deletedObjectClass.getDeclaredField("id");
+//            int id = idField.getInt(deletedObject);
+//            delete(id);
+//        } catch (NoSuchFieldException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
+
         update();
     }
 
@@ -507,23 +545,23 @@ public class StartPageController {
 
     private void showDialogWindow(ActionEvent actionEvent, Object item) {
         Stage stage = new Stage();
+
         try {
             switch (choiceTable.getSelectionModel().getSelectedItem()) {
                 case "Groups": {
                     FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(MainApp.class.getResource("view/AddEditGroupPage.fxml"));
                     stage.setTitle("Group add/edit window");
-                    Pane pane = (Pane) loader.load(MainApp.class.getResource("view/AddEditGroupPage.fxml"));
+                    Pane pane = (Pane) loader.load();
                     Scene scene = new Scene(pane);
                     stage.setScene(scene);
 
-
-//                    FXMLLoader loader1 = new FXMLLoader();
-//                    loader1.setLocation(MainApp.class.getResource("control/GroupRefactorController.java"));
-//                    GroupRefactorController groupRefactorController = loader1.getController();
-//                    groupRefactorController.getGroupNumField().setText(((Group) item).getGroupNum());
-//                    groupRefactorController.getHallField().setText(((Group) item).getLectureHall());
-//                    groupRefactorController.getLecturerCBox().setValue(((Group) item).getLecturer());
-//                    groupRefactorController.getDisciplineCBox().setValue(((Group) item).getDiscipline());
+                    GroupRefactorController groupRefactorController = loader.getController();
+                    groupRefactorController.setId(((Group) item).getId());
+                    groupRefactorController.getGroupNumField().setText(((Group) item).getGroupNum());
+                    groupRefactorController.getHallField().setText(((Group) item).getLectureHall());
+                    groupRefactorController.getLecturerCBox().setValue(((Group) item).getLecturer());
+                    groupRefactorController.getDisciplineCBox().setValue(((Group) item).getDiscipline());
 
                     stage.initModality(Modality.WINDOW_MODAL);
                     stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
@@ -532,9 +570,19 @@ public class StartPageController {
                     break;
                 }
                 case "Students":{
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(MainApp.class.getResource("view/AddEditStudentPage.fxml"));
                     stage.setTitle("Student add/edit window");
-                    Pane pane = FXMLLoader.load(MainApp.class.getResource("view/AddEditStudentPage.fxml"));
+                    Pane pane = (Pane) loader.load();
                     stage.setScene(new Scene(pane));
+
+                    StudentRefactorController studentRefactorController = loader.getController();
+                    studentRefactorController.setId(((Student) item).getId());
+                    studentRefactorController.getNameField().setText(((Student) item).getFullName());
+                    studentRefactorController.getDateField().setText(((Student) item).getDateOfBirth());
+                    studentRefactorController.getPassportField().setText(((Student) item).getPassport());
+                    studentRefactorController.getGroupChoiceBox().setValue(((Student) item).getIdGroup());
+
                     stage.initModality(Modality.WINDOW_MODAL);
                     stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
                     stage.showAndWait();
@@ -542,9 +590,19 @@ public class StartPageController {
                     break;
                 }
                 case "Lecturers":{
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(MainApp.class.getResource("view/AddEditLecturerPage.fxml"));
                     stage.setTitle("Lecturer add/edit window");
-                    Pane pane = FXMLLoader.load(MainApp.class.getResource("view/AddEditLecturerPage.fxml"));
+                    Pane pane = (Pane) loader.load();
                     stage.setScene(new Scene(pane));
+
+                    LecturerRefactorController lecturerRefactorController = loader.getController();
+                    lecturerRefactorController.setId(((Lecturer) item).getId());
+                    lecturerRefactorController.getNameField().setText(((Lecturer) item).getFullName());
+                    lecturerRefactorController.getPassportField().setText(((Lecturer) item).getPassport());
+                    lecturerRefactorController.getDateField().setText(((Lecturer) item).getDateOfBirth());
+                    lecturerRefactorController.getLecturerDisciplineRelationships(((Lecturer) item).getFullName());
+
                     stage.initModality(Modality.WINDOW_MODAL);
                     stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
                     stage.showAndWait();
@@ -552,9 +610,16 @@ public class StartPageController {
                     break;
                 }
                 case "Disciplines":{
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(MainApp.class.getResource("view/AddEditDisciplinePage.fxml"));
                     stage.setTitle("Discipline add/edit window");
-                    Pane pane = FXMLLoader.load(MainApp.class.getResource("view/AddEditDisciplinePage.fxml"));
+                    Pane pane = (Pane) loader.load();
                     stage.setScene(new Scene(pane));
+
+                    DisciplineRefactorController disciplineRefactorController = loader.getController();
+                    disciplineRefactorController.setId(((Discipline) item).getId());
+                    disciplineRefactorController.getDisciplineField().setText(((Discipline) item).getValue());
+
                     stage.initModality(Modality.WINDOW_MODAL);
                     stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
                     stage.showAndWait();
@@ -681,10 +746,5 @@ public class StartPageController {
         }
         return searchName;
     }
-
-
-
-
-
 
 }

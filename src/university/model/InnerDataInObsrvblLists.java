@@ -138,7 +138,6 @@ public class InnerDataInObsrvblLists {
         String pass = "root";
 
         try {
-    //        Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection(url, user, pass);
             Statement statement = connection.createStatement();
             readGroups(statement);
@@ -146,7 +145,6 @@ public class InnerDataInObsrvblLists {
             readDiscipline(statement);
             readLecturer(statement);
             readLecturerHall(statement);
-           // readLectDiscplReltnshps(statement);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -158,18 +156,6 @@ public class InnerDataInObsrvblLists {
         disciplineObservableList = FXCollections.observableList(getDisciplineList());
 
     }
-
-//    private void readGroups(Statement statement) {
-//        ResultSet resultSet = statement.executeQuery("SELECT id, groups FROM group JOIN ");
-//        try {
-//            while (resultSet.next()) {
-//
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
 
     private void readStudents(Statement statement) {
         try {
